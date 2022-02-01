@@ -103,8 +103,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         //collectionView.layer.masksToBounds = false
         addressBarGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         toolBarGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        
         addressBarGesture.delegate = self
         toolBarGesture.delegate = self
+        
         self.addressBarsScrollView.addGestureRecognizer(addressBarGesture)
         self.toolbar.addGestureRecognizer(toolBarGesture)
         
@@ -262,8 +264,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.stripLayout.reset()
                         self.stripLayout.prepare()
                         self.stripLayout.invalidateLayout()
-                        
-                        //self.addressBarsScrollView.isUserInteractionEnabled = false
                     }
                 }
             }
@@ -293,6 +293,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.listLayout.animating = false
                     self.collectionView.isScrollEnabled = true
                     self.collectionView.reloadData()
+                    self.addressBarsScrollView.isUserInteractionEnabled = false
                 }
             }
         } else {
@@ -304,6 +305,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.stripLayout.animating = false
                     self.collectionView.isScrollEnabled = false
                     self.collectionView.reloadData()
+                    self.addressBarsScrollView.isUserInteractionEnabled = true
                 }
             }
         }
@@ -355,7 +357,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !isExpanded {
-            toggleExpandPressed()
             return
         }
 
@@ -374,6 +375,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
                 self.stripLayout.animating = false
                 self.collectionView.isScrollEnabled = false
                 self.collectionView.reloadData()
+                self.addressBarsScrollView.isUserInteractionEnabled = true
             }
         }
     }

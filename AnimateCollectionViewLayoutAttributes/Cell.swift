@@ -53,8 +53,7 @@ class Cell: UICollectionViewCell {
         setupWebView()
         emptyStateView.alpha = 1
         
-        
-        contentView.layer.cornerRadius = 10
+        contentView.layer.cornerRadius = 15
     }
     
     func loadWebsite(from url: URL) {
