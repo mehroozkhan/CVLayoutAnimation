@@ -85,6 +85,9 @@ extension ViewController: UIScrollViewDelegate {
                 //hiddenTabViewController?.view.alpha = 1
                 hiddenAddressBar?.plusOverlayView.alpha = 0
                 hiddenAddressBar?.containerView.alpha = 1
+                
+                guard let cell = self.collectionView.cellForItem(at: IndexPath(item: self.data.count-1, section: 0)) as? Cell else { return }
+                cell.contentView.alpha = 1
             }
         }
     }

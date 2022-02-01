@@ -35,6 +35,7 @@ class Cell: UICollectionViewCell {
     
     var indexItem: Int?
     var hasLoadedUrl = false
+    var isActive = false
     
     /// https://stackoverflow.com/a/57249637/14351818
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
@@ -51,6 +52,9 @@ class Cell: UICollectionViewCell {
         
         setupWebView()
         emptyStateView.alpha = 1
+        
+        
+        contentView.layer.cornerRadius = 10
     }
     
     func loadWebsite(from url: URL) {

@@ -12,7 +12,7 @@ protocol CellDelegate {
     func closeTapped(indexItem: Int)
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let viewModel = BrowserContainerViewModel()
     
@@ -89,7 +89,8 @@ class ViewController: UIViewController {
     let addressBarsStackView = UIStackView()
     let addressBarsScrollView = UIScrollView()
     
-    var gesture: UIPanGestureRecognizer!
+    var addressBarGesture: UIPanGestureRecognizer!
+    var toolBarGesture: UIPanGestureRecognizer!
     
     var cvContentOffset = CGPoint(x: 0, y: 0)
     
@@ -100,18 +101,26 @@ class ViewController: UIViewController {
         collectionView.isPagingEnabled = true
         collectionView.isScrollEnabled = false
         //collectionView.layer.masksToBounds = false
-        gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-        //self.bottomView.addGestureRecognizer(gesture)
-        
+        addressBarGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        toolBarGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        addressBarGesture.delegate = self
+        toolBarGesture.delegate = self
+        self.addressBarsScrollView.addGestureRecognizer(addressBarGesture)
+        self.toolbar.addGestureRecognizer(toolBarGesture)
         
         setupToolbar()
         setupAddressBarsScrollView()
         setupAddressBarsStackView()
         setupAddressBarKeyboardBackgroundView()
         setupCancelButton()
+        setupKeyboardManager()
         addressBarsScrollView.delegate = self
         
         openNewTab(isHidden: false)
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
     
     func openNewTab(isHidden: Bool) {
@@ -121,6 +130,7 @@ class ViewController: UIViewController {
     
     func addNewCell(isHidden: Bool) {
         self.data.append("")
+        self.stripLayout.preparedOnce = false
         self.collectionView.reloadData()
     }
     
@@ -152,7 +162,7 @@ class ViewController: UIViewController {
     func setupToolbar() {
         view.addSubview(toolbar)
         toolbar.snp.makeConstraints {
-            $0.top.equalTo(collectionView.snp.bottom)
+            //$0.top.equalTo(collectionView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             toolbarBottomConstraint = $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).constraint
             $0.height.equalTo(100)
@@ -225,7 +235,7 @@ class ViewController: UIViewController {
             
             self.collectionView.setContentOffset(CGPoint(x: (translation.x * -1) + cvContentOffset.x, y: 0), animated: false)
             
-            if translation.y < 0, computedTranslation > 0.7 {
+            if translation.y < 0, computedTranslation > 0.5 {
                 stripLayout.shrinkCell = computedTranslation
                 stripLayout.reset()
                 stripLayout.prepare()
@@ -252,6 +262,8 @@ class ViewController: UIViewController {
                         self.stripLayout.reset()
                         self.stripLayout.prepare()
                         self.stripLayout.invalidateLayout()
+                        
+                        //self.addressBarsScrollView.isUserInteractionEnabled = false
                     }
                 }
             }
@@ -316,7 +328,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         
         cell.label.isHidden = !isExpanded
         cell.closeButton.isHidden = !isExpanded
-        cell.contentView.layer.cornerRadius = 5
         
         cell.cellDelegate = self
         cell.delegate = self
@@ -332,33 +343,40 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
             cell.topView.isHidden = false
         }
         
+        
+        if indexPath.item == self.data.count - 1, data.count > 1 {
+            cell.contentView.alpha = 0
+        } else {
+            cell.contentView.alpha = 1
+        }
+        
         return cell
     }
 
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        if !isExpanded {
-//            toggleExpandPressed()
-//            return
-//        }
-//
-//        stripLayout.selectedItem = indexPath.item
-//        if let cell = collectionView.cellForItem(at: indexPath) as? Cell {
-//            cell.label.isHidden = true
-//            cell.closeButton.isHidden = true
-//        }
-//        isExpanded.toggle()
-//        collectionView.isPagingEnabled = true
-//        stripLayout.reset()
-//        stripLayout.animating = true
-//
-//        self.collectionView.setCollectionViewLayout(self.stripLayout, animated: true) { (completed) in
-//            if completed{
-//                self.stripLayout.animating = false
-//                self.collectionView.isScrollEnabled = false
-//                self.collectionView.reloadData()
-//            }
-//        }
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if !isExpanded {
+            toggleExpandPressed()
+            return
+        }
+
+        stripLayout.selectedItem = indexPath.item
+        if let cell = collectionView.cellForItem(at: indexPath) as? Cell {
+            cell.label.isHidden = true
+            cell.closeButton.isHidden = true
+        }
+        isExpanded.toggle()
+        collectionView.isPagingEnabled = true
+        stripLayout.reset()
+        stripLayout.animating = true
+
+        self.collectionView.setCollectionViewLayout(self.stripLayout, animated: true) { (completed) in
+            if completed{
+                self.stripLayout.animating = false
+                self.collectionView.isScrollEnabled = false
+                self.collectionView.reloadData()
+            }
+        }
+    }
 }
 
 extension ViewController: CellDelegate {
