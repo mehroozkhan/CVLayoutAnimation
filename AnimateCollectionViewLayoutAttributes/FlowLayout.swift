@@ -22,6 +22,8 @@ fileprivate enum LayoutTransition{
 
 class FlowLayout: UICollectionViewFlowLayout {
     
+    let cellPadding : CGFloat = 15
+    
     var selectedItem = 0
     var shrinkCell: CGFloat = 1
     var visibleItem = 0
@@ -177,20 +179,20 @@ class FlowLayout: UICollectionViewFlowLayout {
             if layoutType == .strip {
                 
                 origin = CGPoint(x: offset, y: (collectionView.frame.height - cellSize.height)/2)
-                addedOffset = cellSize.width
+                addedOffset = cellSize.width + cellPadding
                 
                 if shrinkCell != 1 {
                     let increaseWPadding = (collectionView.frame.width - cellSize.width) / 2
-                    var x = (collectionView.frame.size.width * CGFloat(itemIndex)) + increaseWPadding
+                    var x = ((collectionView.frame.size.width + cellPadding) * CGFloat(itemIndex)) + increaseWPadding
                     if itemIndex == visibleItem + 1 {
-                        x = (collectionView.frame.size.width * CGFloat(itemIndex)) - increaseWPadding
+                        x = ((collectionView.frame.size.width + cellPadding) * CGFloat(itemIndex)) - increaseWPadding
                     }
                     else if itemIndex == visibleItem - 1 {
-                        x = (collectionView.frame.size.width * CGFloat(itemIndex)) + (increaseWPadding * 3)
+                        x = ((collectionView.frame.size.width + cellPadding) * CGFloat(itemIndex)) + (increaseWPadding * 3)
 
                     }
-                    origin = CGPoint(x: x + 20, y: (collectionView.frame.height - cellSize.height)/2)
-                    addedOffset = collectionView.frame.width
+                    origin = CGPoint(x: x , y: (collectionView.frame.height - cellSize.height)/4)
+                    addedOffset = collectionView.frame.width + cellPadding
                 }
                 
             } else {

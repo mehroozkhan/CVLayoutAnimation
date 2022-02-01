@@ -122,6 +122,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if stripLayout.shrinkCell != 1 {
+            return false
+        }
         return true
     }
     
@@ -235,7 +238,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         if gestureRecognizer.state == .changed {
             
-            self.collectionView.setContentOffset(CGPoint(x: (translation.x * -1) + cvContentOffset.x, y: 0), animated: false)
+            //self.collectionView.setContentOffset(CGPoint(x: (translation.x * -1) + cvContentOffset.x, y: 0), animated: false)
             
             if translation.y < 0, computedTranslation > 0.5 {
                 stripLayout.shrinkCell = computedTranslation

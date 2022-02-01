@@ -14,6 +14,8 @@ extension ViewController: UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        addressBarGesture.isEnabled = false
+        toolBarGesture.isEnabled = false
         // width of one address bar page is address bar width + padding of `addressBarsStackViewSpacing / 2` from left and right side
         // we need to exclude the leading and trailing offset of (24 - address bar stack view padding from one side) from the precentage calculation
         let padding =  (addressBarsStackViewSidePadding - addressBarsStackViewSpacing / 2)
@@ -93,12 +95,16 @@ extension ViewController: UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        addressBarGesture.isEnabled = true
+        toolBarGesture.isEnabled = true
         if currentTabIndex == data.count - 1 {
             hasHiddenTab = false
         }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        addressBarGesture.isEnabled = true
+        toolBarGesture.isEnabled = true
         if !decelerate && currentTabIndex == data.count - 1 {
             hasHiddenTab = false
         }
