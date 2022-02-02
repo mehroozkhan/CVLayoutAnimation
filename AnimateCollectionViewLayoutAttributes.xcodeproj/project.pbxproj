@@ -30,7 +30,8 @@
 		3C1966A1268045B500F9F9B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C19669F268045B500F9F9B7 /* LaunchScreen.storyboard */; };
 		3C748BF22684D4EF003DD79E /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C748BF12684D4EF003DD79E /* FlowLayout.swift */; };
 		3C8E7CB826C87E66000ABC48 /* LocalConsole in Frameworks */ = {isa = PBXBuildFile; productRef = 3C8E7CB726C87E66000ABC48 /* LocalConsole */; };
-		3C8E7CBA26C88061000ABC48 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E7CB926C88061000ABC48 /* Cell.swift */; };
+		E9BBFDCE27AA5B0E00E007D2 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BBFDCD27AA5B0E00E007D2 /* UIView+Extension.swift */; };
+		E9BBFDD227AA8FA600E007D2 /* WebViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BBFDD127AA8FA600E007D2 /* WebViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,7 +58,8 @@
 		3C1966A0268045B500F9F9B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3C1966A2268045B500F9F9B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3C748BF12684D4EF003DD79E /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
-		3C8E7CB926C88061000ABC48 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		E9BBFDCD27AA5B0E00E007D2 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		E9BBFDD127AA8FA600E007D2 /* WebViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				3784D24727A8FAC800532C56 /* Array+Helpers.swift */,
 				3784D24827A8FAC800532C56 /* UIColor+Helpers.swift */,
 				3784D24927A8FAC800532C56 /* NSNotification+Helpers.swift */,
+				E9BBFDCD27AA5B0E00E007D2 /* UIView+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -136,13 +139,13 @@
 				3784D23F27A8F87700532C56 /* Helpers */,
 				37D51CE627A8119C00C101E3 /* Toolbar */,
 				3C196694268045B300F9F9B7 /* AppDelegate.swift */,
+				E9BBFDD127AA8FA600E007D2 /* WebViewCell.swift */,
 				3C196696268045B300F9F9B7 /* SceneDelegate.swift */,
 				3C196698268045B300F9F9B7 /* ViewController.swift */,
 				3769C26427A8528700682926 /* VC+Keyboard.swift */,
 				3784D24D27A8FC1600532C56 /* VC+AddressBarsAnimation.swift */,
 				3784D24F27A9106800532C56 /* VC++ToolbarAnimation.swift */,
 				3C748BF12684D4EF003DD79E /* FlowLayout.swift */,
-				3C8E7CB926C88061000ABC48 /* Cell.swift */,
 				3C19669D268045B500F9F9B7 /* Assets.xcassets */,
 				3C19669A268045B300F9F9B7 /* Main.storyboard */,
 				3C19669F268045B500F9F9B7 /* LaunchScreen.storyboard */,
@@ -235,13 +238,14 @@
 				3C196699268045B300F9F9B7 /* ViewController.swift in Sources */,
 				3784D24427A8F87700532C56 /* URLValidator.swift in Sources */,
 				3784D24A27A8FAC800532C56 /* Array+Helpers.swift in Sources */,
+				E9BBFDD227AA8FA600E007D2 /* WebViewCell.swift in Sources */,
 				3784D24527A8F87700532C56 /* URLGenerator.swift in Sources */,
 				3C748BF22684D4EF003DD79E /* FlowLayout.swift in Sources */,
 				37D51CEB27A8119C00C101E3 /* BrowserAddressBar.swift in Sources */,
 				3C196695268045B300F9F9B7 /* AppDelegate.swift in Sources */,
-				3C8E7CBA26C88061000ABC48 /* Cell.swift in Sources */,
 				3C196697268045B300F9F9B7 /* SceneDelegate.swift in Sources */,
 				3784D24327A8F87700532C56 /* KeyboardManager.swift in Sources */,
+				E9BBFDCE27AA5B0E00E007D2 /* UIView+Extension.swift in Sources */,
 				3784D23E27A8F83600532C56 /* BrowserContainerViewModel.swift in Sources */,
 				3784D24C27A8FAC800532C56 /* NSNotification+Helpers.swift in Sources */,
 				37D51CEC27A8119C00C101E3 /* BrowserToolbar.swift in Sources */,

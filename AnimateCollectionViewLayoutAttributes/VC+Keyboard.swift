@@ -59,7 +59,6 @@ private extension ViewController {
     addressBarKeyboardBackgroundView.isHidden = true
     addressBarKeyboardBackgroundViewBottomConstraint?.update(offset: 0)
     addressBarsScrollViewBottomConstraint?.update(offset: addressBarsScrollViewExpandingFullyBottomOffset)
-    //tabViewControllers[safe: currentTabIndex]?.hideEmptyStateIfNeeded()
     setSideAddressBarsHidden(false)
   }
   

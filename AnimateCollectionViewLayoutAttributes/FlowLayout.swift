@@ -159,8 +159,9 @@ class FlowLayout: UICollectionViewFlowLayout {
         //let screenWidth = UIScreen.main.bounds.width
         
         var offset: CGFloat = 0 /// origin for each cell
+        let listWidth = (collectionView.frame.width - 45) / 2
         var cellSize = layoutType == .strip ? CGSize(width: collectionView.frame.width , height: collectionView.frame.height) :
-        CGSize(width: (collectionView.frame.width / 2) , height: collectionView.frame.height / 2.8)
+        CGSize(width: listWidth , height: listWidth * 1.6)
         
         if layoutType == .strip, shrinkCell != 1 {
             cellSize = CGSize(width: cellSize.width * shrinkCell, height: cellSize.height * shrinkCell)
@@ -191,18 +192,21 @@ class FlowLayout: UICollectionViewFlowLayout {
                         x = ((collectionView.frame.size.width + cellPadding) * CGFloat(itemIndex)) + (increaseWPadding * 3)
 
                     }
+                    
                     origin = CGPoint(x: x , y: (collectionView.frame.height - cellSize.height)/4)
                     addedOffset = collectionView.frame.width + cellPadding
                 }
                 
             } else {
+                let y = (cellSize.height + cellPadding) * CGFloat(Int(itemIndex/2)) + UIView.aboveSafeArea
+                let x = (collectionView.frame.width + cellPadding) * CGFloat(selectedItem) + cellPadding
                 if itemIndex % 2 == 0 {
-                    origin = CGPoint(x: 0, y: (Int(cellSize.height) * itemIndex/2))
-                    addedOffset = 0
+                    origin = CGPoint(x: cellPadding , y: y)
+                    addedOffset = cellSize.height + cellPadding
                     
                 } else {
-                    origin = CGPoint(x: Int(cellSize.width) - 1, y: Int(cellSize.height) * Int(ceil(Double(itemIndex/2))) )
-                    addedOffset = cellSize.height
+                    origin = CGPoint(x: cellSize.width + 30, y: y)
+                    addedOffset = 0
                 }
                 
             }
@@ -215,7 +219,7 @@ class FlowLayout: UICollectionViewFlowLayout {
         
         self.contentSize = layoutType == .strip /// set the collection view's `collectionViewContentSize`
             ? CGSize(width: offset , height: cellSize.height) /// if strip, height is fixed
-            : CGSize(width: cellSize.width, height: offset) /// if list, width is fixed
+        : CGSize(width: collectionView.contentSize.width, height: offset) /// if list, width is fixed
         
         
     }
@@ -253,8 +257,9 @@ extension FlowLayout{
     private func transformCurrentContentOffset(_ transition: LayoutTransition) -> CGPoint {
         
         //let stripItemWidth = UIScreen.main.bounds.width
+        let listWidth = (collectionView!.frame.width - 45) / 2
         let stripItemWidth: CGFloat = collectionView!.frame.width
-        let listItemHeight: CGFloat = collectionView!.frame.height / 2.8
+        let listItemHeight: CGFloat = listWidth * 1.6
         
         switch(transition){
         case .fromStripToList:
@@ -269,7 +274,7 @@ extension FlowLayout{
 
         case .fromListToStrip:
             //let numberOfItems = collectionView!.contentOffset.y / listItemHeight // from list
-            var newPoint = CGPoint(x: CGFloat(selectedItem) * CGFloat(stripItemWidth), y: 0) // to strip
+            var newPoint = CGPoint(x: CGFloat(selectedItem) * CGFloat(stripItemWidth +  cellPadding), y: 0) // to strip
 
             if (newPoint.x + collectionView!.frame.width) >= contentSize.width{
                 newPoint = CGPoint(x: contentSize.width - collectionView!.frame.width, y: 0)

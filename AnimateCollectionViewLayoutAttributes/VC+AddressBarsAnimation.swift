@@ -22,7 +22,10 @@ extension ViewController: UIScrollViewDelegate {
         let percentage = addressBarsScrollView.contentOffset.x / (addressBarsScrollView.contentSize.width - padding)
         
         // we need to add tabs stack view spacing to the tabs scroll view content width, because spacing after last page is missing (we don't have any padding on sides)
-        collectionView.contentOffset.x = percentage * (collectionView.contentSize.width + tabsStackViewSpacing)
+        if canScroll  {
+            collectionView.contentOffset.x = percentage * (collectionView.contentSize.width + tabsStackViewSpacing)
+        }
+        
         //contentView.tabsScrollView.contentOffset.x = percentage * (contentView.tabsScrollView.contentSize.width + contentView.tabsStackViewSpacing)
         
         // if it is one tab before last tab then we should animate the appearance of the last hidden tab
@@ -88,8 +91,8 @@ extension ViewController: UIScrollViewDelegate {
                 hiddenAddressBar?.plusOverlayView.alpha = 0
                 hiddenAddressBar?.containerView.alpha = 1
                 
-                guard let cell = self.collectionView.cellForItem(at: IndexPath(item: self.data.count-1, section: 0)) as? Cell else { return }
-                cell.contentView.alpha = 1
+                //guard let cell = self.collectionView.cellForItem(at: IndexPath(item: self.data.count-1, section: 0)) as? Cell else { return }
+                //cell.contentView.alpha = 1
             }
         }
     }
@@ -99,6 +102,8 @@ extension ViewController: UIScrollViewDelegate {
         toolBarGesture.isEnabled = true
         if currentTabIndex == data.count - 1 {
             hasHiddenTab = false
+            data[currentTabIndex].isActive = true
+            collectionView.reloadData()
         }
     }
     
@@ -107,6 +112,8 @@ extension ViewController: UIScrollViewDelegate {
         toolBarGesture.isEnabled = true
         if !decelerate && currentTabIndex == data.count - 1 {
             hasHiddenTab = false
+            data[currentTabIndex].isActive = true
+            collectionView.reloadData()
         }
     }
     
