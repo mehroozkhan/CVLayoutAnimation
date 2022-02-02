@@ -137,7 +137,8 @@ class Cell: UICollectionViewCell {
         
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints {
-            $0.leading.trailing.top.bottom.equalTo(webView)
+            $0.leading.trailing.bottom.equalTo(webView)
+            $0.top.equalTo(webView).offset(-15)
         }
         
         contentView.addSubview(closeButton)
@@ -166,21 +167,14 @@ class Cell: UICollectionViewCell {
         self.bottomLabel.text = data.pageTitle
         if isGridView {
             imageView.layer.cornerRadius = 15
-            UIView.animate(withDuration: 0.0) {
-                self.labelView.isHidden = false
-                self.topViewHeightConstraint.constant = 0
-            }
+            self.labelView.isHidden = false
+            self.topViewHeightConstraint.constant = 0
         } else {
             imageView.layer.cornerRadius = 0
-            UIView.animate(withDuration: 0.0) {
-                self.labelView.isHidden = true
-                self.topViewHeightConstraint.constant = UIView.aboveSafeArea
-            }
+            self.labelView.isHidden = true
+            self.topViewHeightConstraint.constant = UIView.aboveSafeArea
         }
-        if data.enteredURL == nil {
-            setDefaultView()
-        }
-        else if isShrinking || isGridView {
+        if data.enteredURL == nil || isShrinking || isGridView {
             setSnapShot()
         }
         else {
@@ -188,18 +182,13 @@ class Cell: UICollectionViewCell {
             self.imageView.alpha = 0
         }
     }
-    
-    func setDefaultView() {
-        self.webView.alpha = 0
-        self.imageView.alpha = 1
-        self.imageView.contentMode = .scaleAspectFit
-        self.imageView.image = #imageLiteral(resourceName: "safari-empty-tab-background.jpg")
-    }
-    
+
     func setSnapShot() {
         self.imageView.image = #imageLiteral(resourceName: "safari-empty-tab-background.jpg")
-        if data?.enteredURL == nil {
-            setDefaultView()
+        guard data?.enteredURL != nil else {
+            self.imageView.contentMode = .scaleAspectFit
+            self.webView.alpha = 0
+            self.imageView.alpha = 1
             return
         }
         self.imageView.contentMode = .scaleAspectFill
@@ -221,6 +210,24 @@ class Cell: UICollectionViewCell {
         }
         self.webView.alpha = 1
         self.imageView.alpha = 0
+    }
+    
+    func prepareForGridView() {
+        topViewHeightConstraint.constant = 0
+        imageView.layer.cornerRadius = 15
+        UIView.animate(withDuration: 0.2) {
+            self.labelView.isHidden =  false
+            self.layoutIfNeeded()
+        }
+    }
+    
+    func prepareForFullView() {
+        closeButton.isHidden = true
+        labelView.isHidden =  true
+        topViewHeightConstraint.constant = UIView.aboveSafeArea
+        UIView.animate(withDuration: 0.2) {
+            self.layoutIfNeeded()
+        }
     }
     
     func loadWebsite(from url: URL) {

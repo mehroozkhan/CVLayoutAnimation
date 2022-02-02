@@ -296,7 +296,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func toggleExpandPressed() {
         // See change in layout better
-        collectionView.layer.speed = 0.7
+        collectionView.layer.speed = 0.5
         //collectionView.layer.duration = CFTimeInterval(1)
         
         isGridView.toggle()
@@ -336,25 +336,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func hideTopViewOfVisibleCells()  {
         for cell in self.cells {
-            cell.topViewHeightConstraint.constant = 0
-            UIView.animate(withDuration: 0.2) {
-                cell.labelView.isHidden =  false
-                cell.layoutIfNeeded()
-            } completion: { success in
-                //cell.imageView.layer.cornerRadius = 15
-            }
+            cell.prepareForGridView()
         }
     }
     
     func ShowTopViewOfVisibleCells()  {
         for cell in self.cells {
-            cell.closeButton.isHidden = true
-            cell.imageView.layer.cornerRadius = 0
-            cell.labelView.isHidden =  true
-            cell.topViewHeightConstraint.constant = UIView.aboveSafeArea
-            UIView.animate(withDuration: 0.2) {
-                cell.layoutIfNeeded()
-            }
+            cell.prepareForFullView()
         }
     }
     
@@ -398,6 +386,8 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         
         ShowTopViewOfVisibleCells()
         toggleExpandPressed()
+        self.addressBarGesture.isEnabled = true
+        self.toolBarGesture.isEnabled = true
 //        isGridView.toggle()
 //        collectionView.isPagingEnabled = true
 //        stripLayout.reset()
