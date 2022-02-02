@@ -199,7 +199,6 @@ class FlowLayout: UICollectionViewFlowLayout {
                 
             } else {
                 let y = (cellSize.height + cellPadding) * CGFloat(Int(itemIndex/2)) + UIView.aboveSafeArea
-                let x = (collectionView.frame.width + cellPadding) * CGFloat(selectedItem) + cellPadding
                 if itemIndex % 2 == 0 {
                     origin = CGPoint(x: cellPadding , y: y)
                     addedOffset = cellSize.height + cellPadding
