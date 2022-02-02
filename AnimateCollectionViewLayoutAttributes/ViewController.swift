@@ -42,6 +42,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var addressBarPageWidth: CGFloat {
         view.frame.width + addressBarWidthOffset + addressBarsStackViewSpacing
     }
+    private var startYOffset = CGFloat(0)
     
     var data:[CellData] = []
     
@@ -120,6 +121,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         setupAddressBarKeyboardBackgroundView()
         setupCancelButton()
         setupKeyboardManager()
+        updateStateForKeyboardDisappearing()
         addressBarsScrollView.delegate = self
         
         addNewCell(CellData(isActive: true))
@@ -259,6 +261,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 listLayout.selectedItem = getVisibleItem()
                 hideTopViewOfVisibleCells()
                 toggleExpandPressed()
+                collapseToolbar()
             }
             else {
                 _ = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
@@ -302,6 +305,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         isGridView.toggle()
         canScroll = false
         if isGridView {
+            addressBarsScrollView.isScrollEnabled = false
             collectionView.isPagingEnabled = false
             listLayout.reset()
             listLayout.animating = true
@@ -314,6 +318,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         } else {
+            let x = addressBarPageWidth * CGFloat(stripLayout.selectedItem)
+            addressBarsScrollView.setContentOffset(CGPoint(x: x, y: addressBarsScrollView.contentOffset.y), animated: true)
+            expandToolbar()
+            addressBarsScrollView.isScrollEnabled = true
             collectionView.isPagingEnabled = true
             stripLayout.reset()
             stripLayout.animating = true
@@ -398,20 +406,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         
         ShowTopViewOfVisibleCells()
         toggleExpandPressed()
-//        isGridView.toggle()
-//        collectionView.isPagingEnabled = true
-//        stripLayout.reset()
-//        stripLayout.animating = true
-//
-//        self.collectionView.setCollectionViewLayout(self.stripLayout, animated: true) { (completed) in
-//            if completed{
-//                self.addressBarGesture.isEnabled = true
-//                self.toolBarGesture.isEnabled = true
-//                self.stripLayout.animating = false
-//                self.collectionView.isScrollEnabled = false
-//                self.collectionView.reloadData()
-//            }
-//        }
     }
 }
 

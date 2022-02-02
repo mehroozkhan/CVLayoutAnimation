@@ -105,6 +105,27 @@ extension ViewController {
             rightAddressBar?.containerView.alpha = alpha
         }
     }
+    
+    func collapseToolbar() {
+        if collapsingToolbarAnimator == nil || collapsingToolbarAnimator?.state == .inactive {
+            setupCollapsingToolbarAnimator()
+        }
+        isCollapsed = true
+        collapsingToolbarAnimator?.fractionComplete = 1
+        collapsingToolbarAnimator?.continueAnimation(withTimingParameters: nil, durationFactor: 0)
+        tabViewControllerDidEndDragging()
+    }
+    
+    func expandToolbar() {
+        guard isCollapsed else { return }
+        if expandingToolbarAnimator == nil || expandingToolbarAnimator?.state == .inactive {
+            setupExpandingToolbarAnimator()
+        }
+        expandingToolbarAnimator?.fractionComplete = 1
+        isCollapsed = false
+        expandingToolbarAnimator?.continueAnimation(withTimingParameters: nil, durationFactor: 0)
+        tabViewControllerDidEndDragging()
+    }
 }
 
 extension ViewController: BrowserTabViewControllerDelegate {

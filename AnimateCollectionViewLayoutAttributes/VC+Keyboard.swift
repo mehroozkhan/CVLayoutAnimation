@@ -31,7 +31,7 @@ extension ViewController {
 }
 
 // MARK: Helper methods
-private extension ViewController {
+extension ViewController {
     func animateWithKeyboard(for notification: NSNotification, animation: ((CGRect) -> Void)?) {
         guard let frame = notification.keyboardEndFrame,
               let duration = notification.keyboardAnimationDuration,
