@@ -218,7 +218,7 @@ class FlowLayout: UICollectionViewFlowLayout {
         
         self.contentSize = layoutType == .strip /// set the collection view's `collectionViewContentSize`
             ? CGSize(width: offset , height: cellSize.height) /// if strip, height is fixed
-        : CGSize(width: collectionView.contentSize.width, height: offset) /// if list, width is fixed
+        : CGSize(width: collectionView.frame.width, height: offset) /// if list, width is fixed
         
         
     }

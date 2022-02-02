@@ -22,7 +22,7 @@ extension ViewController: UIScrollViewDelegate {
         let percentage = addressBarsScrollView.contentOffset.x / (addressBarsScrollView.contentSize.width - padding)
         
         // we need to add tabs stack view spacing to the tabs scroll view content width, because spacing after last page is missing (we don't have any padding on sides)
-        if canScroll  {
+        if canScroll, scrollView != self.collectionView  {
             collectionView.contentOffset.x = percentage * (collectionView.contentSize.width + tabsStackViewSpacing)
         }
         
@@ -60,6 +60,7 @@ extension ViewController: UIScrollViewDelegate {
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView != self.collectionView else { return }
         let pageFraction = targetContentOffset.pointee.x / addressBarPageWidth
         var nextTabIndex: Int
         if velocity.x > 0 {

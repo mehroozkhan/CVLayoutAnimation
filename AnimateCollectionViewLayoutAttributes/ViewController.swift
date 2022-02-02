@@ -42,7 +42,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var addressBarPageWidth: CGFloat {
         view.frame.width + addressBarWidthOffset + addressBarsStackViewSpacing
     }
-    private var startYOffset = CGFloat(0)
     
     var data:[CellData] = []
     
