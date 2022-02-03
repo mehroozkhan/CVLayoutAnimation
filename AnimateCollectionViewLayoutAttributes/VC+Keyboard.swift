@@ -50,8 +50,6 @@ extension ViewController {
         addressBarKeyboardBackgroundViewBottomConstraint?.update(offset: -offset + 10)
         addressBarsScrollViewBottomConstraint?.update(offset: -offset)
         
-        //self.collectionView.cellForItem(at: IndexPath(item: currentTabIndex, section: 0))
-        //tabViewControllers[safe: currentTabIndex]?.showEmptyState()
         setSideAddressBarsHidden(true)
     }
   

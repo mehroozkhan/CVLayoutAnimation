@@ -2,7 +2,7 @@
 //  VC++ToolbarAnimation.swift
 //  AnimateCollectionViewLayoutAttributes
 //
-//  Created by Hammad Ashraf on 01/02/2022.
+//  Created by Mehrooz Khan on 02/02/2022.
 //
 
 import Foundation
@@ -189,14 +189,14 @@ extension ViewController: BrowserTabViewControllerDelegate {
     }
     
     // MARK: Address bar loading bar animation handling
-    func tabViewController(_ cvCell: Cell, didStartLoadingURL url: URL) {
+    func tabViewController(_ cvCell: WebViewCell, didStartLoadingURL url: URL) {
         guard let addressBar = addressBars[safe: cvCell.indexItem ?? 0] else { return }
         
         addressBar.setLoadingProgress(0, animated: false)
         addressBar.domainLabel.text = viewModel.getDomain(from: url)
     }
     
-    func tabViewController(_ cvCell: Cell, didChangeLoadingProgressTo progress: Float) {
+    func tabViewController(_ cvCell: WebViewCell, didChangeLoadingProgressTo progress: Float) {
         
         addressBars[safe: cvCell.indexItem ?? 0]?.setLoadingProgress(progress, animated: true)
     }

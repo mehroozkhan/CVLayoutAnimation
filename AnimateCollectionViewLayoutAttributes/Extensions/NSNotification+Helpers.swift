@@ -1,35 +1,35 @@
-//
-//  NSNotification+Helpers.swift
-//  Browser
-//
-//  Created by Amer Hukić on 16. 9. 2021..
-//
+    //
+    //  NSNotification+Helpers.swift
+    //  Browser
+    //
+    //  Created by Mehrooz Khan on 02/02/2022.
+    //
 
 import UIKit
 
 extension NSNotification {
-  var keyboardAnimationDuration: Double? {
-    userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double
-  }
-  
-  var keyboardBeginFrame: CGRect? {
-    (userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue
-  }
-  
-  var keyboardEndFrame: CGRect? {
-    (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-  }
-  
-  var keyboardWillShow: Bool {
-    guard let keyboardBeginFrame = keyboardBeginFrame,
-          let keyboardEndFrame = keyboardEndFrame else {
-      return false
+    var keyboardAnimationDuration: Double? {
+        userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double
     }
-    return keyboardBeginFrame.minY > keyboardEndFrame.minY
-  }
-  
-  var keyboardAnimationCurve: UIView.AnimationCurve? {
-    guard let curveValue = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int else { return nil }
-    return UIView.AnimationCurve(rawValue: curveValue)
-  }
+    
+    var keyboardBeginFrame: CGRect? {
+        (userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue
+    }
+    
+    var keyboardEndFrame: CGRect? {
+        (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+    }
+    
+    var keyboardWillShow: Bool {
+        guard let keyboardBeginFrame = keyboardBeginFrame,
+              let keyboardEndFrame = keyboardEndFrame else {
+                  return false
+              }
+        return keyboardBeginFrame.minY > keyboardEndFrame.minY
+    }
+    
+    var keyboardAnimationCurve: UIView.AnimationCurve? {
+        guard let curveValue = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int else { return nil }
+        return UIView.AnimationCurve(rawValue: curveValue)
+    }
 }

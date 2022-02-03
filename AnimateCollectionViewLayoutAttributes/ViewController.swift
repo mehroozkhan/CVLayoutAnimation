@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  AnimateBetweenCollectionLayouts
 //
-//  Created by Zheng on 6/20/21.
+//  Created by Mehrooz Khan on 02/02/2022.
 //
 
 import UIKit
@@ -16,7 +16,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let viewModel = BrowserContainerViewModel()
     
-    // Address bar animation constants
     let tabsStackViewSpacing = CGFloat(24)
     let addressBarWidthOffset = CGFloat(-48)
     let addressBarContainerHidingWidthOffset = CGFloat(-200)
@@ -46,8 +45,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var data:[CellData] = []
     
     var isGridView = false
-    lazy var listLayout = FlowLayout(layoutType: .list)
-    lazy var stripLayout = FlowLayout(layoutType: .strip)
+    lazy var listLayout = FlowLayout(layoutType: .grid)
+    lazy var stripLayout = FlowLayout(layoutType: .full)
     
     var addressBars: [BrowserAddressBar] {
       addressBarsStackView.arrangedSubviews as? [BrowserAddressBar] ?? []
@@ -96,7 +95,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var canScroll = true
     
-    var cells: [Cell] = []
+    var cells: [WebViewCell] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,7 +135,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func addNewCell(_ data: CellData) {
-        collectionView.register(Cell.self, forCellWithReuseIdentifier: "\(self.data.count)")
+        collectionView.register(WebViewCell.self, forCellWithReuseIdentifier: "\(self.data.count)")
         self.data.append(data)
         self.stripLayout.preparedOnce = false
         self.collectionView.reloadData()
@@ -258,6 +257,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             if abs(translation.y) > 150 {
                 stripLayout.shrinkCell = 1
                 listLayout.selectedItem = getVisibleItem()
+                if let cell = getVisibleCell() {
+                    collectionView.bringSubviewToFront(cell)
+                }
                 hideTopViewOfVisibleCells()
                 toggleExpandPressed()
                 collapseToolbar()
@@ -290,16 +292,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         return visibleIndexPath?.item ?? 0
     }
     
-    func getVisibleCell() -> Cell? {
+    func getVisibleCell() -> WebViewCell? {
         let index = getVisibleItem()
         isShowSnapShot = false
-        return collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? Cell
+        return collectionView.cellForItem(at: IndexPath(item: index, section: 0)) as? WebViewCell
     }
     
     func toggleExpandPressed() {
-        // See change in layout better
+        
         collectionView.layer.speed = 0.5
-        //collectionView.layer.duration = CFTimeInterval(1)
         
         isGridView.toggle()
         canScroll = false
@@ -330,6 +331,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.collectionView.isScrollEnabled = false
                     self.collectionView.reloadData()
                     self.canScroll =  true
+                    self.addressBarGesture.isEnabled = true
+                    self.toolBarGesture.isEnabled = true
                 }
             }
         }
@@ -353,9 +356,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    func getNewCell() -> Cell {
+    func getNewCell() -> WebViewCell {
         let nib = Bundle.main.loadNibNamed("WebViewCell", owner: nil, options: nil)
-        let c = nib?.first as? Cell
+        let c = nib?.first as? WebViewCell
         return c!
     }
 }
@@ -369,15 +372,12 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(indexPath.item)", for: indexPath) as! Cell
-        
-        cell.closeButton.isHidden = !isGridView
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(indexPath.item)", for: indexPath) as! WebViewCell
         
         cell.cellDelegate = self
         cell.delegate = self
         cell.indexItem = indexPath.item
         cell.setCellContents(self.data[indexPath.item], isGridView: isGridView, isShrinking: stripLayout.shrinkCell != 1)
-        self.cells.append(cell)
         if indexPath.item > self.cells.count - 1 {
             self.cells.append(cell)
         }
@@ -385,57 +385,43 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if !isGridView {
-            return
-        }
+        guard isGridView else { return }
 
         stripLayout.selectedItem = indexPath.item
-        
         ShowTopViewOfVisibleCells()
+        collectionView.bringSubviewToFront(self.cells[indexPath.item])
         toggleExpandPressed()
-        self.addressBarGesture.isEnabled = true
-        self.toolBarGesture.isEnabled = true
     }
 }
 
 extension ViewController: CellDelegate {
     
     func closeTapped(indexItem: Int) {
-        self.data.remove(at: indexItem)
-        //self.collectionView.reloadData()
-        
-        let indexPath = IndexPath(item: indexItem, section: 0)
-        self.collectionView.performBatchUpdates({
-            self.collectionView.deleteItems(at:[indexPath])
-        }, completion: {_ in
-            self.collectionView.reloadData()
-        })
+        //Need to implement it
     }
 }
 
 
 extension ViewController: BrowserAddressBarDelegate {
     
-  func addressBarDidBeginEditing() {
-    isAddressBarActive = true
-  }
+    func addressBarDidBeginEditing() {
+        isAddressBarActive = true
+    }
   
-  func addressBar(_ addressBar: BrowserAddressBar, didReturnWithText text: String) {
-      
-      guard let cvCell = self.collectionView.cellForItem(at: IndexPath(item: currentTabIndex, section: 0)) as? Cell else { return }
-      let isLastTab = currentTabIndex == self.data.count - 1
-      
-      if isLastTab {
-      // if we started loading a URL and it is on the last tab then ->
-      // open a hidden tab so that we can prepare it for new tab animation if the user swipes to the left
-        addNewCell(CellData(isActive: false))
+    func addressBar(_ addressBar: BrowserAddressBar, didReturnWithText text: String) {
+        
+        guard let cvCell = self.collectionView.cellForItem(at: IndexPath(item: currentTabIndex, section: 0)) as? WebViewCell else { return }
+        let isLastTab = currentTabIndex == self.data.count - 1
+        
+        if isLastTab {
+            addNewCell(CellData(isActive: false))
+        }
+        
+        if let url = self.viewModel.getURL(for: text) {
+            addressBar.domainLabel.text = viewModel.getDomain(from: url)
+            cvCell.loadWebsite(from: url)
+        }
+        view.endEditing(true)
     }
-      
-    if let url = self.viewModel.getURL(for: text) {
-      addressBar.domainLabel.text = viewModel.getDomain(from: url)
-        cvCell.loadWebsite(from: url)
-    }
-      view.endEditing(true)
-  }
 }
 

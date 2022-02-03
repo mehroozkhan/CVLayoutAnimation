@@ -1,39 +1,39 @@
-//
-//  URLGenerator.swift
-//  Browser
-//
-//  Created by Amer Hukić on 21. 9. 2021..
-//
+    //
+    //  URLGenerator.swift
+    //  Browser
+    //
+    //  Created by Mehrooz Khan on 02/02/2022.
+    //
 
 import Foundation
 
 class URLGenerator {
-  private let urlValidator: URLValidator
-  
-  init(urlValidator: URLValidator = .init()) {
-    self.urlValidator = urlValidator
-  }
-  
-  func getURL(for text: String) -> URL? {
-    let text = text.lowercased()
-    guard urlValidator.isValidURL(text) else {
-      return getGoogleSearchURL(for: text)
+    private let urlValidator: URLValidator
+    
+    init(urlValidator: URLValidator = .init()) {
+        self.urlValidator = urlValidator
     }
     
-    guard text.hasPrefix("http://") || text.hasPrefix("https://") else {
-      return URL(string: "http://\(text)")
+    func getURL(for text: String) -> URL? {
+        let text = text.lowercased()
+        guard urlValidator.isValidURL(text) else {
+            return getGoogleSearchURL(for: text)
+        }
+        
+        guard text.hasPrefix("http://") || text.hasPrefix("https://") else {
+            return URL(string: "http://\(text)")
+        }
+        
+        return URL(string: text)
     }
-    
-    return URL(string: text)
-  }
 }
 
 private extension URLGenerator {
-  func getGoogleSearchURL(for text: String) -> URL? {
-    guard let encodedSearchString = text.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed) else {
-      return nil
+    func getGoogleSearchURL(for text: String) -> URL? {
+        guard let encodedSearchString = text.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed) else {
+            return nil
+        }
+        let queryString = "https://www.google.com/search?q=\(encodedSearchString)"
+        return URL(string: queryString)
     }
-    let queryString = "https://www.google.com/search?q=\(encodedSearchString)"
-    return URL(string: queryString)
-  }
 }

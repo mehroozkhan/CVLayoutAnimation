@@ -2,14 +2,14 @@
 //  FlowLayout.swift
 //  AnimateBetweenCollectionLayouts
 //
-//  Created by Zheng on 6/24/21.
+//  Created by Mehrooz Khan on 01/02/2022.
 //
 
 import UIKit
 
 enum LayoutType {
-    case strip
-    case list
+    case full
+    case grid
 }
 
 /**
@@ -43,8 +43,8 @@ class FlowLayout: UICollectionViewFlowLayout {
         }
 
         switch(layoutType){
-        case .list: return transformCurrentContentOffset(.fromStripToList)
-        case .strip: return transformCurrentContentOffset(.fromListToStrip)
+        case .grid: return transformCurrentContentOffset(.fromStripToList)
+        case .full: return transformCurrentContentOffset(.fromListToStrip)
         }
     }
     
@@ -70,7 +70,7 @@ class FlowLayout: UICollectionViewFlowLayout {
         var visibleRect: CGRect
         
         if animating{
-            if layoutType == .strip {
+            if layoutType == .full {
                 visibleRect = transformVisibleRectToOppositeLayout(.fromListToStrip, ogVisibleRect)
             }
             else{
@@ -90,7 +90,7 @@ class FlowLayout: UICollectionViewFlowLayout {
 
         let pointKeyPath: WritableKeyPath<CGPoint, CGFloat>
         
-        if layoutType == .strip {
+        if layoutType == .full {
             trailingCutoff = CGFloat(collectionView.bounds.width - leadingCutoff)
             paddingInsets = UIEdgeInsets(top: 0, left: -50, bottom: 0, right: -50)
             pointKeyPath = \.x
@@ -160,15 +160,12 @@ class FlowLayout: UICollectionViewFlowLayout {
         
         var offset: CGFloat = 0 /// origin for each cell
         let listWidth = (collectionView.frame.width - 45) / 2
-        var cellSize = layoutType == .strip ? CGSize(width: collectionView.frame.width , height: collectionView.frame.height) :
+        var cellSize = layoutType == .full ? CGSize(width: collectionView.frame.width , height: collectionView.frame.height) :
         CGSize(width: listWidth , height: listWidth * 1.6)
         
-        if layoutType == .strip, shrinkCell != 1 {
+        if layoutType == .full, shrinkCell != 1 {
             cellSize = CGSize(width: cellSize.width * shrinkCell, height: cellSize.height * shrinkCell)
         }
-        
-        //let cellSize = layoutType == .strip ? CGSize(width: screenWidth , height: collectionView.frame.height) : CGSize(width: (screenWidth / 2) , height: collectionView.frame.height / 2.8)
-        
         
         for itemIndex in 0..<collectionView.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: itemIndex, section: 0)
@@ -177,7 +174,7 @@ class FlowLayout: UICollectionViewFlowLayout {
             var origin: CGPoint
             var addedOffset: CGFloat
             
-            if layoutType == .strip {
+            if layoutType == .full {
                 
                 origin = CGPoint(x: offset, y: (collectionView.frame.height - cellSize.height)/2)
                 addedOffset = cellSize.width + cellPadding
@@ -216,14 +213,12 @@ class FlowLayout: UICollectionViewFlowLayout {
             
         }
         
-        self.contentSize = layoutType == .strip /// set the collection view's `collectionViewContentSize`
+        self.contentSize = layoutType == .full /// set the collection view's `collectionViewContentSize`
             ? CGSize(width: offset , height: cellSize.height) /// if strip, height is fixed
         : CGSize(width: collectionView.frame.width, height: offset) /// if list, width is fixed
         
         
     }
-    
-    
     
     /// boilerplate code
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -272,8 +267,8 @@ extension FlowLayout{
             return newPoint
 
         case .fromListToStrip:
-            //let numberOfItems = collectionView!.contentOffset.y / listItemHeight // from list
-            var newPoint = CGPoint(x: CGFloat(selectedItem) * CGFloat(stripItemWidth +  cellPadding), y: 0) // to strip
+            
+            var newPoint = CGPoint(x: CGFloat(selectedItem) * CGFloat(stripItemWidth +  cellPadding), y: 0) 
 
             if (newPoint.x + collectionView!.frame.width) >= contentSize.width{
                 newPoint = CGPoint(x: contentSize.width - collectionView!.frame.width, y: 0)

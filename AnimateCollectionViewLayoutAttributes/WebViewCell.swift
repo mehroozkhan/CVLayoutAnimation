@@ -20,13 +20,13 @@ class CellData {
 }
 
 protocol BrowserTabViewControllerDelegate: AnyObject {
-    func tabViewController(_ cvCell: Cell, didStartLoadingURL url: URL)
-    func tabViewController(_ cvCell: Cell, didChangeLoadingProgressTo progress: Float)
+    func tabViewController(_ cvCell: WebViewCell, didStartLoadingURL url: URL)
+    func tabViewController(_ cvCell: WebViewCell, didChangeLoadingProgressTo progress: Float)
     func tabViewControllerDidScroll(yOffsetChange: CGFloat)
     func tabViewControllerDidEndDragging()
 }
 
-class Cell: UICollectionViewCell {
+class WebViewCell: UICollectionViewCell {
     
     var topViewHeightConstraint: NSLayoutConstraint!
         
@@ -108,6 +108,7 @@ class Cell: UICollectionViewCell {
         imageView.layer.cornerRadius = 15
         imageView.backgroundColor = .white
         imageView.layer.masksToBounds = true
+        imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         addShadow()
     }
     
@@ -138,7 +139,7 @@ class Cell: UICollectionViewCell {
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.leading.trailing.bottom.equalTo(webView)
-            $0.top.equalTo(webView).offset(-15)
+            $0.top.equalTo(webView).offset(0)
         }
         
         contentView.addSubview(closeButton)
@@ -146,16 +147,17 @@ class Cell: UICollectionViewCell {
             $0.trailing.equalTo(webView).offset(-10)
             $0.top.equalTo(webView).offset(10)
         }
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
     }
 
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         super.apply(layoutAttributes)
-        layer.zPosition = CGFloat(layoutAttributes.zIndex) // or any zIndex you want to set
+        layer.zPosition = CGFloat(layoutAttributes.zIndex)
     }
     
-//    @IBAction func closeTapped(_ sender: UIButton) {
-//        cellDelegate?.closeTapped(indexItem: self.indexItem ?? 0)
-//    }
+    @objc func closeTapped(_ sender: UIButton) {
+        cellDelegate?.closeTapped(indexItem: self.indexItem ?? 0)
+    }
     
     func setCellContents(_ data: CellData, isGridView: Bool, isShrinking: Bool) {
         self.data = data
@@ -164,6 +166,7 @@ class Cell: UICollectionViewCell {
             return
         }
         self.contentView.alpha = 1
+        closeButton.isHidden = !isGridView
         self.bottomLabel.text = data.pageTitle
         if isGridView {
             imageView.layer.cornerRadius = 15
@@ -256,10 +259,6 @@ class Cell: UICollectionViewCell {
                 delegate?.tabViewController(self, didStartLoadingURL: webView.url!)
             case #keyPath(WKWebView.estimatedProgress):
                 delegate?.tabViewController(self, didChangeLoadingProgressTo: Float(webView.estimatedProgress))
-                    //        case #keyPath(WKWebView.themeColor):
-                    //            updateStatusBarColor()
-                    //        case #keyPath(WKWebView.underPageBackgroundColor):
-                    //            updateStatusBarColor()
             case #keyPath(WKWebView.title):
                 data?.pageTitle = webView.title ?? "Page title"
                 self.bottomLabel.text = data?.pageTitle
@@ -302,7 +301,7 @@ class Cell: UICollectionViewCell {
     }
 }
 
-extension Cell: WKNavigationDelegate {
+extension WebViewCell: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated {
                 // handle redirects

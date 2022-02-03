@@ -2,7 +2,7 @@
 //  VC+AddressBarsAnimation.swift
 //  AnimateCollectionViewLayoutAttributes
 //
-//  Created by Hammad Ashraf on 01/02/2022.
+//  Created by Mehrooz Khan on 02/02/2022.
 //
 
 import UIKit

@@ -2,7 +2,7 @@
 //  URLValidator.swift
 //  Browser
 //
-//  Created by Amer Hukić on 21. 9. 2021..
+//  Created by Mehrooz Khan on 02/02/2022.
 //
 
 import Foundation
